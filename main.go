@@ -48,12 +48,10 @@ func main() {
 
 			}
 		}
-		fmt.Println(res)
 		a = append(a, string(reloaded.Punctuations([]byte(strings.Join(res, " ")))))
 	}
 	// fmt.Println(a)
 	joined := []byte(strings.Join(a, "\n"))
-	// joined = reloaded.Punctuations(joined)
 
 	fmt.Println(string(joined))
 }

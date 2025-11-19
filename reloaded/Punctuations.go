@@ -1,7 +1,5 @@
 package reloaded
 
-import "fmt"
-
 func Punctuations(r []byte) []byte {
 	// First, remove multiple spaces
 	for i := 1; i < len(r); i++ {
@@ -13,10 +11,14 @@ func Punctuations(r []byte) []byte {
 
 	// Handle single quotes
 	check := false
-	fmt.Println(string(r[0]))
 	for i := 0; i < len(r); i++ {
 		if r[i] == '\'' {
 			if !check {
+
+				if i < len(r)-1 && i > 0 && r[i-1] != ' ' && r[i+1] != ' ' {
+					continue
+				}
+
 				if i < len(r)-1 && r[i+1] == ' ' {
 					r = []byte(string(r[:i+1]) + string(r[i+2:]))
 				}
@@ -26,6 +28,9 @@ func Punctuations(r []byte) []byte {
 				}
 				check = true
 			} else {
+				if i < len(r)-1 && i > 0 && r[i-1] != ' ' && r[i+1] != ' ' {
+					continue
+				}
 				if i > 0 && r[i-1] == ' ' {
 					r = []byte(string(r[:i-1]) + string(r[i:]))
 					i--
