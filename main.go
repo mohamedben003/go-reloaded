@@ -17,7 +17,6 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	r = reloaded.Punctuations(r)
 	res := reloaded.TrimmedSlice(r)
 
 	fmt.Println(res)
@@ -44,8 +43,11 @@ func main() {
 			res = reloaded.Remove(res, i)
 			break
 		}
-
 	}
+	joined := []byte(strings.Join(res, " "))
+
+	joined = reloaded.Punctuations(joined)
+	fmt.Println(string(joined))
 
 }
 
