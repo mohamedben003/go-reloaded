@@ -15,7 +15,7 @@ func Punctuations(r []byte) []byte {
 		if r[i] == '\'' {
 			if !check {
 
-				if i < len(r)-1 && i > 0 && r[i-1] != ' ' && r[i+1] != ' ' {
+				if i < len(r)-1 && i > 0 && isAlpha(r[i-1]) && isAlpha(r[i+1]) {
 					continue
 				}
 
@@ -28,7 +28,8 @@ func Punctuations(r []byte) []byte {
 				}
 				check = true
 			} else {
-				if i < len(r)-1 && i > 0 && r[i-1] != ' ' && r[i+1] != ' ' {
+
+				if i < len(r)-1 && i > 0 && isAlpha(r[i-1]) && isAlpha(r[i+1]) {
 					continue
 				}
 				if i > 0 && r[i-1] == ' ' {
@@ -66,4 +67,8 @@ func Punctuations(r []byte) []byte {
 	}
 
 	return r
+}
+
+func isAlpha(b byte) bool {
+	return (b >= 'a' && b <= 'z') || (b >= 'A' && b <= 'Z')
 }
