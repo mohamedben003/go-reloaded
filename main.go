@@ -3,8 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
-	"reloaded/reloaded"
 	"strings"
+
+	"reloaded/reloaded"
 )
 
 func main() {
@@ -17,38 +18,44 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	res := reloaded.TrimmedSlice(r)
+	res1 := reloaded.TrimmedSlice(r)
+	a := []string{}
 
-	fmt.Println(res)
-	for i := 1; i < len(res)-1; i++ {
-		switch res[i] {
-		case "(bin)":
-			res[i-1] = reloaded.ConvertBase(res[i-1], res[i])
-			res = reloaded.Remove(res, i)
-			break
-		case "(hex)":
-			res[i-1] = reloaded.ConvertBase(res[i-1], res[i])
-			res = reloaded.Remove(res, i)
-			break
-		case "(cap)":
-			res[i-1] = reloaded.ToUpper(res[i-1])
-			res = reloaded.Remove(res, i)
-			break
-		case "(up)":
-			res[i-1] = strings.ToUpper(res[i-1])
-			res = reloaded.Remove(res, i)
-			break
-		case "(low)":
-			res[i-1] = strings.ToLower(res[i-1])
-			res = reloaded.Remove(res, i)
-			break
+	// fmt.Println(res)
+	for j := 0; j < len(res1); j++ {
+		res := res1[j]
+		for i := 1; i < len(res)-1; i++ {
+			switch res[i] {
+			case "(bin)":
+				res[i-1] = reloaded.ConvertBase(res[i-1], res[i])
+				res = reloaded.Remove(res, i)
+
+			case "(hex)":
+				res[i-1] = reloaded.ConvertBase(res[i-1], res[i])
+				res = reloaded.Remove(res, i)
+
+			case "(cap)":
+				res[i-1] = reloaded.ToUpper(res[i-1])
+				res = reloaded.Remove(res, i)
+
+			case "(up)":
+				res[i-1] = strings.ToUpper(res[i-1])
+				res = reloaded.Remove(res, i)
+
+			case "(low)":
+				res[i-1] = strings.ToLower(res[i-1])
+				res = reloaded.Remove(res, i)
+
+			}
 		}
+		fmt.Println(res)
+		a = append(a, string(reloaded.Punctuations([]byte(strings.Join(res, " ")))))
 	}
-	joined := []byte(strings.Join(res, " "))
+	// fmt.Println(a)
+	joined := []byte(strings.Join(a, "\n"))
+	// joined = reloaded.Punctuations(joined)
 
-	joined = reloaded.Punctuations(joined)
 	fmt.Println(string(joined))
-
 }
 
 // out := ""
