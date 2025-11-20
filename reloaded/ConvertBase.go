@@ -3,7 +3,7 @@ package reloaded
 import "strconv"
 
 func ConvertBase(res1, base string) string {
-	if base == "bin" {
+	if base == "(bin)" {
 		temp, _ := strconv.ParseInt(res1, 2, 64)
 		res1 = strconv.FormatInt(temp, 10)
 	} else {

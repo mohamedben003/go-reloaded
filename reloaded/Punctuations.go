@@ -1,20 +1,13 @@
 package reloaded
 
 func Punctuations(r []byte) []byte {
-	// First, remove multiple spaces
-	for i := 1; i < len(r); i++ {
-		if r[i-1] == ' ' && r[i] == ' ' {
-			r = append(r[:i-1], r[i:]...)
-			i--
-		}
-	}
 
 	// Handle single quotes
 	check := false
 	for i := 0; i < len(r); i++ {
 		if r[i] == '\'' {
 			if !check {
-
+				//Opening '
 				if i < len(r)-1 && i > 0 && isAlpha(r[i-1]) && isAlpha(r[i+1]) {
 					continue
 				}
@@ -28,7 +21,7 @@ func Punctuations(r []byte) []byte {
 				}
 				check = true
 			} else {
-
+				// Closing '
 				if i < len(r)-1 && i > 0 && isAlpha(r[i-1]) && isAlpha(r[i+1]) {
 					continue
 				}
@@ -44,7 +37,6 @@ func Punctuations(r []byte) []byte {
 		}
 	}
 
-	// Handle punctuation marks (., ,, !, ?, :, ;)
 	for i := 0; i < len(r); i++ {
 		if r[i] == '.' || r[i] == ',' || r[i] == '!' || r[i] == '?' || r[i] == ':' || r[i] == ';' {
 			// Remove space before punctuation

@@ -34,7 +34,7 @@ func main() {
 				res = reloaded.Remove(res, i)
 
 			case "(cap)":
-				res[i-1] = reloaded.ToUpper(res[i-1])
+				res[i-1] = reloaded.ToCap(res[i-1])
 				res = reloaded.Remove(res, i)
 
 			case "(up)":
