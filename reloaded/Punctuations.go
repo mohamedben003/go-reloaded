@@ -48,7 +48,7 @@ func Punctuations(r []byte) []byte {
 	for i := 0; i < len(r); i++ {
 		if r[i] == '.' || r[i] == ',' || r[i] == '!' || r[i] == '?' || r[i] == ':' || r[i] == ';' {
 			// Remove space before punctuation
-			if r[i-1] == ' ' {
+			if i > 0 && r[i-1] == ' ' {
 				r = append(r[:i-1], r[i:]...)
 				i--
 			}
