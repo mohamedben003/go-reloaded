@@ -1,20 +1,19 @@
 package reloaded
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 func TrimmedSlice(r []byte) [][]string {
 	str := strings.Split(string(r), "\n")
 	res := [][]string{}
 
 	for i := 0; i < len(str); i++ {
-		x := strings.Split(str[i], " ")
-		for j :=0 ; j<len(x); j++ {
-			if x[j] == "" {
-				x = append(x[:j], x[j+1:]...)
-				j--
-			}
-		}
+		x := strings.Fields(str[i])
+		x = an(x)
 		res = append(res, x)
 	}
+	fmt.Println(res)
 	return res
 }

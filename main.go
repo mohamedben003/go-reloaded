@@ -21,7 +21,6 @@ func main() {
 	res1 := reloaded.TrimmedSlice(r)
 	a := []string{}
 
-	// fmt.Println(res)
 	for j := 0; j < len(res1); j++ {
 		res := res1[j]
 		for i := 1; i < len(res)-1; i++ {
