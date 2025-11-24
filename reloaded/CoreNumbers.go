@@ -1,18 +1,17 @@
 package reloaded
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
 
 func Core(s []string) []string {
-	s = cleaner(s)
-	s = handleComplexTags(s)
+	s = Cleaner(s)
+	s = Nested(s)
 	return s
 }
 
-func cleaner(s []string) []string {
+func Cleaner(s []string) []string {
 	changed := true
 
 	for changed {
@@ -22,69 +21,71 @@ func cleaner(s []string) []string {
 		for i := 0; i < len(s); i++ {
 			word := s[i]
 
-			// Check if current word contains (hex)
 			if strings.Contains(word, "(hex)") {
-				// Extract the part before (hex)
-				parts := strings.Split(word, "(hex)")
-				if len(parts) >= 2 && len(newSlice) > 0 {
-					// Convert previous word
-					newSlice[len(newSlice)-1] = ConvertBase(newSlice[len(newSlice)-1], "(hex)")
-					// Add the remaining part if it exists
-					if parts[1] != "" {
-						newSlice = append(newSlice, parts[1])
-					}
-					changed = true
-					continue
-				}
-			}
-
-			// Check if current word contains (bin)
-			if strings.Contains(word, "(bin)") {
-				parts := strings.Split(word, "(bin)")
-				if len(parts) >= 2 && len(newSlice) > 0 {
-					newSlice[len(newSlice)-1] = ConvertBase(newSlice[len(newSlice)-1], "(bin)")
-					if parts[1] != "" {
-						newSlice = append(newSlice, parts[1])
-					}
-					changed = true
-					continue
-				}
-			}
-
-			// Check if current word contains (up) - but NOT followed by comma
-			if strings.Contains(word, "(up)") {
-				parts := strings.Split(word, "(up)")
-				if len(parts) >= 2 && len(newSlice) > 0 {
-					newSlice[len(newSlice)-1] = strings.ToUpper(newSlice[len(newSlice)-1])
-					if parts[1] != "" {
-						newSlice = append(newSlice, parts[1])
-					}
-					changed = true
-					continue
-				}
-			}
-
-			// Check if current word contains (low) - but NOT followed by comma
-			if strings.Contains(word, "(low)") {
-				parts := strings.Split(word, "(low)")
-				if len(parts) >= 2 && len(newSlice) > 0 {
+				if word == "(hex)" {
 					newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
-					if parts[1] != "" {
-						newSlice = append(newSlice, parts[1])
-					}
+				}
+				parts := strings.Split(word, "(hex)")
+				if len(newSlice) > 0 {
+					parts[0] = strings.ToLower(parts[0])
+					newSlice = append(newSlice, parts[0])
+					newSlice = append(newSlice, parts[1])
 					changed = true
 					continue
 				}
 			}
 
-			// Check if current word contains (cap) - but NOT followed by comma
+			if strings.Contains(word, "(bin)") {
+				if word == "(bin)" {
+					newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
+				}
+				parts := strings.Split(word, "(bin)")
+				if len(newSlice) > 0 {
+					parts[0] = strings.ToLower(parts[0])
+					newSlice = append(newSlice, parts[0])
+					newSlice = append(newSlice, parts[1])
+					changed = true
+					continue
+				}
+			}
+
+			if strings.Contains(word, "(up)") {
+				if word == "(up)" {
+					newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
+				}
+				parts := strings.Split(word, "(up)")
+				if len(newSlice) > 0 {
+					parts[0] = strings.ToLower(parts[0])
+					newSlice = append(newSlice, parts[0])
+					newSlice = append(newSlice, parts[1])
+					changed = true
+					continue
+				}
+			}
+
+			if strings.Contains(word, "(low)") {
+				if word == "(low)" {
+					newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
+				}
+				parts := strings.Split(word, "(low)")
+				if len(newSlice) > 0 {
+					parts[0] = strings.ToLower(parts[0])
+					newSlice = append(newSlice, parts[0])
+					newSlice = append(newSlice, parts[1])
+					changed = true
+					continue
+				}
+			}
+
 			if strings.Contains(word, "(cap)") {
+				if word == "(cap)" {
+					newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
+				}
 				parts := strings.Split(word, "(cap)")
-				if len(parts) >= 2 && len(newSlice) > 0 {
-					newSlice[len(newSlice)-1] = ToCap(newSlice[len(newSlice)-1])
-					if parts[1] != "" {
-						newSlice = append(newSlice, parts[1])
-					}
+				if len(newSlice) > 0 {
+					parts[0] = strings.ToLower(parts[0])
+					newSlice = append(newSlice, parts[0])
+					newSlice = append(newSlice, parts[1])
 					changed = true
 					continue
 				}
@@ -96,20 +97,11 @@ func cleaner(s []string) []string {
 
 		s = newSlice
 	}
-
 	return s
 }
 
-// Helper function to check if the next element starts with a comma
-// func isFollowedByComma(s []string, index int) bool {
-// 	if index+1 < len(s) {
-// 		return strings.HasPrefix(s[index+1], ",")
-// 	}
-// 	return false
-// }
-
-// handleComplexTags processes tags like (cap, 2), (low, 3), (up, 5)
-func handleComplexTags(s []string) []string {
+// Nested processes tags like (cap, 2), (low, 3), (up, 5)
+func Nested(s []string) []string {
 	se := Punctuations([]byte((strings.Join(s, " "))))
 	s = strings.Fields(string(se))
 	var check bool
@@ -128,10 +120,6 @@ func handleComplexTags(s []string) []string {
 			}
 		}
 		if strings.HasSuffix(s[i], "(up,") || strings.HasPrefix(s[i], "(") && strings.HasPrefix(s[i+1], "up") {
-			fmt.Println("worked")
-			fmt.Println("worked")
-			fmt.Println("worked")
-			fmt.Println("worked")
 			s, check = Do_n_times(s, j, "up")
 			if !check {
 				continue

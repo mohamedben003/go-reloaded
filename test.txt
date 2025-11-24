@@ -1,13 +1,13 @@
 ' two words here '      This is good.You .   .  . know?!!
 harold wilson (     CAP  (low)  ,  10    (bin)    ) : ' I am a optimist ,but a optimist who carries a raincoat . '
-salam cv CAP (low)(up) ' opk   '   okok sala' m ' don't ok
 dsfffdssfd     sala'v ok' sala'v ok' 
 ''''''
 hello.exe
 .don't
 
 hi ( up , 6 )
-hi ( up , 2) not working 
+hi ( up , 2)  
 
+salam cv CAP (cap)(low) lll ' opk   '   okok sala' m ' don't ok
 
 last err is remove from CoreNumbers and simple cleaning 
