@@ -23,77 +23,87 @@ func Cleaner(s []string) []string {
 
 			if strings.Contains(word, "(hex)") {
 				if word == "(hex)" {
-					newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
-					continue
+					if len(newSlice) > 0 { // first word is (hex)
+						newSlice[len(newSlice)-1] = ConvertBase(newSlice[len(newSlice)-1], "(hex)")
+						continue
+					} else {
+						continue
+					}
 				}
 				parts := strings.Split(word, "(hex)")
-				if len(newSlice) > 0 {
-					parts[0] = strings.ToLower(parts[0])
-					newSlice = append(newSlice, parts[0])
-					newSlice = append(newSlice, parts[1])
-					changed = true
-					continue
-				}
+				parts[0] = ConvertBase(parts[0], "(hex)")
+				newSlice = append(newSlice, parts[0])
+				newSlice = append(newSlice, parts[1])
+				changed = true
+				continue
 			}
 
 			if strings.Contains(word, "(bin)") {
 				if word == "(bin)" {
-					newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
-					continue
+					if len(newSlice) > 0 {
+						newSlice[len(newSlice)-1] = ConvertBase(newSlice[len(newSlice)-1], "(bin)")
+						continue
+					} else {
+						continue
+					}
 				}
 				parts := strings.Split(word, "(bin)")
-				if len(newSlice) > 0 {
-					parts[0] = strings.ToLower(parts[0])
-					newSlice = append(newSlice, parts[0])
-					newSlice = append(newSlice, parts[1])
-					changed = true
-					continue
-				}
+				parts[0] = ConvertBase(parts[0], "(bin)")
+				newSlice = append(newSlice, parts[0])
+				newSlice = append(newSlice, parts[1])
+				changed = true
+				continue
 			}
 
 			if strings.Contains(word, "(up)") {
 				if word == "(up)" {
-					newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
-					continue
+					if len(newSlice) > 0 {
+						newSlice[len(newSlice)-1] = strings.ToUpper(newSlice[len(newSlice)-1])
+						continue
+					} else {
+						continue
+					}
 				}
 				parts := strings.Split(word, "(up)")
-				if len(newSlice) > 0 {
-					parts[0] = strings.ToLower(parts[0])
-					newSlice = append(newSlice, parts[0])
-					newSlice = append(newSlice, parts[1])
-					changed = true
-					continue
-				}
+				parts[0] = strings.ToUpper(parts[0])
+				newSlice = append(newSlice, parts[0])
+				newSlice = append(newSlice, parts[1])
+				changed = true
+				continue
 			}
 
 			if strings.Contains(word, "(low)") {
 				if word == "(low)" {
-					newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
-					continue
+					if len(newSlice) > 0 {
+						newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
+						continue
+					} else {
+						continue
+					}
 				}
 				parts := strings.Split(word, "(low)")
-				if len(newSlice) > 0 {
-					parts[0] = strings.ToLower(parts[0])
-					newSlice = append(newSlice, parts[0])
-					newSlice = append(newSlice, parts[1])
-					changed = true
-					continue
-				}
+				parts[0] = strings.ToLower(parts[0])
+				newSlice = append(newSlice, parts[0])
+				newSlice = append(newSlice, parts[1])
+				changed = true
+				continue
 			}
 
 			if strings.Contains(word, "(cap)") {
 				if word == "(cap)" {
-					newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
-					continue
+					if len(newSlice) > 0 {
+						newSlice[len(newSlice)-1] = ToCap(newSlice[len(newSlice)-1])
+						continue
+					} else {
+						continue
+					}
 				}
 				parts := strings.Split(word, "(cap)")
-				if len(newSlice) > 0 {
-					parts[0] = strings.ToLower(parts[0])
-					newSlice = append(newSlice, parts[0])
-					newSlice = append(newSlice, parts[1])
-					changed = true
-					continue
-				}
+				parts[0] = ToCap(parts[0])
+				newSlice = append(newSlice, parts[0])
+				newSlice = append(newSlice, parts[1])
+				changed = true
+				continue
 			}
 
 			// If no modification, keep the word
@@ -109,16 +119,38 @@ func Cleaner(s []string) []string {
 func Nested(s []string) []string {
 	se := Punctuations([]byte((strings.Join(s, " "))))
 	s = strings.Fields(string(se))
+
 	for i := 1; i < len(s)-1; i++ {
-		j := i
+		check := false
 		if strings.HasSuffix(s[i], "(cap,") || strings.HasPrefix(s[i], "(") && strings.HasPrefix(s[i+1], "cap") {
-			s = Do_n_times(s, j, "cap")
+			s = Do_n_times(s, i, "cap")
+			check = true
 		}
 		if strings.HasSuffix(s[i], "(low,") || strings.HasPrefix(s[i], "(") && strings.HasPrefix(s[i+1], "low") {
-			s = Do_n_times(s, j, "low")
+			s = Do_n_times(s, i, "low")
+			check = true
 		}
 		if strings.HasSuffix(s[i], "(up,") || strings.HasPrefix(s[i], "(") && strings.HasPrefix(s[i+1], "up") {
-			s = Do_n_times(s, j, "up")
+			s = Do_n_times(s, i, "up")
+			check = true
+		}
+		if check {
+			start := i
+			elementsToRemove := 0
+
+			for j := i; j < len(s); j++ {
+				elementsToRemove++
+				if strings.Contains(s[j], ")") {
+					if idx := strings.Index(s[j], ")"); idx < len(s[j])-1 {
+						s[j] = s[j][idx+1:]
+						elementsToRemove--
+					}
+					break
+				}
+			}
+
+			s = append(s[:start], s[start+elementsToRemove:]...)
+			i = start - 1
 		}
 	}
 	return s

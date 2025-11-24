@@ -6,8 +6,11 @@ hello.exe
 .don't
 
 hi ( up , 6 )
-hi ( up , 2)  
+hi (up , 2)
 
-salam cv CAP (cap)(low) lll ' opk   '   okok sala' m ' don't ok
+salam cv CAP (cap) lll ' opk   '   okok sala' m ' don't ok
 
-last err is remove from CoreNumbers and simple cleaning 
+last err is remove from CoreNumbers and simple cleaning
+1E(hex)46
+ 
+hiTIFEIOÊqijvpq (cap)
