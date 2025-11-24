@@ -24,6 +24,7 @@ func Cleaner(s []string) []string {
 			if strings.Contains(word, "(hex)") {
 				if word == "(hex)" {
 					newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
+					continue
 				}
 				parts := strings.Split(word, "(hex)")
 				if len(newSlice) > 0 {
@@ -38,6 +39,7 @@ func Cleaner(s []string) []string {
 			if strings.Contains(word, "(bin)") {
 				if word == "(bin)" {
 					newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
+					continue
 				}
 				parts := strings.Split(word, "(bin)")
 				if len(newSlice) > 0 {
@@ -52,6 +54,7 @@ func Cleaner(s []string) []string {
 			if strings.Contains(word, "(up)") {
 				if word == "(up)" {
 					newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
+					continue
 				}
 				parts := strings.Split(word, "(up)")
 				if len(newSlice) > 0 {
@@ -66,6 +69,7 @@ func Cleaner(s []string) []string {
 			if strings.Contains(word, "(low)") {
 				if word == "(low)" {
 					newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
+					continue
 				}
 				parts := strings.Split(word, "(low)")
 				if len(newSlice) > 0 {
@@ -80,6 +84,7 @@ func Cleaner(s []string) []string {
 			if strings.Contains(word, "(cap)") {
 				if word == "(cap)" {
 					newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
+					continue
 				}
 				parts := strings.Split(word, "(cap)")
 				if len(newSlice) > 0 {
@@ -104,34 +109,22 @@ func Cleaner(s []string) []string {
 func Nested(s []string) []string {
 	se := Punctuations([]byte((strings.Join(s, " "))))
 	s = strings.Fields(string(se))
-	var check bool
 	for i := 1; i < len(s)-1; i++ {
 		j := i
 		if strings.HasSuffix(s[i], "(cap,") || strings.HasPrefix(s[i], "(") && strings.HasPrefix(s[i+1], "cap") {
-			s, check = Do_n_times(s, j, "cap")
-			if !check {
-				continue
-			}
+			s = Do_n_times(s, j, "cap")
 		}
 		if strings.HasSuffix(s[i], "(low,") || strings.HasPrefix(s[i], "(") && strings.HasPrefix(s[i+1], "low") {
-			s, check = Do_n_times(s, j, "low")
-			if !check {
-				continue
-			}
+			s = Do_n_times(s, j, "low")
 		}
 		if strings.HasSuffix(s[i], "(up,") || strings.HasPrefix(s[i], "(") && strings.HasPrefix(s[i+1], "up") {
-			s, check = Do_n_times(s, j, "up")
-			if !check {
-				continue
-			}
+			s = Do_n_times(s, j, "up")
 		}
-
 	}
 	return s
 }
 
-func Do_n_times(s []string, i int, typ string) ([]string, bool) {
-	check := true
+func Do_n_times(s []string, i int, typ string) []string {
 	numIndex := i + 1
 
 	// If i+1 is not numeric, try i+2
@@ -142,7 +135,7 @@ func Do_n_times(s []string, i int, typ string) ([]string, bool) {
 	}
 
 	if !val {
-		return s, false
+		return s
 	}
 	var x int
 	if bracket == 2 {
@@ -170,7 +163,7 @@ func Do_n_times(s []string, i int, typ string) ([]string, bool) {
 			}
 		}
 	}
-	return s, check
+	return s
 }
 
 func IsNumeric(s string) (bool, int) {
