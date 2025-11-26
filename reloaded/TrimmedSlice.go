@@ -1,7 +1,6 @@
 package reloaded
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -14,6 +13,5 @@ func TrimmedSlice(r []byte) [][]string {
 		x = an(x)
 		res = append(res, x)
 	}
-	fmt.Println(res)
 	return res
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
 	"reloaded/reloaded"
 )
 
@@ -24,13 +25,16 @@ func main() {
 
 	for j := 0; j < len(res1); j++ {
 		res := res1[j]
-		
 		res = reloaded.Core(res)
-		// fmt.Println(res)
-		
 		a = append(a, string(reloaded.Punctuations([]byte(strings.Join(res, " ")))))
 	}
 
 	joined := []byte(strings.Join(a, "\n"))
-	fmt.Println(string(joined))
+
+	err = os.WriteFile(arg[1], joined, 0o644)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("File written successfully to", arg[1])
 }

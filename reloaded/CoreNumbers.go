@@ -6,216 +6,129 @@ import (
 )
 
 func Core(s []string) []string {
-	s = Cleaner(s)
-	s = Nested(s)
-	return s
-}
+	res := []string{}
 
-func Cleaner(s []string) []string {
-	changed := true
-
-	for changed {
-		changed = false
-		newSlice := []string{}
-
-		for i := 0; i < len(s); i++ {
-			word := s[i]
-
-			if strings.Contains(word, "(hex)") {
-				if word == "(hex)" {
-					if len(newSlice) > 0 { // first word is (hex)
-						newSlice[len(newSlice)-1] = ConvertBase(newSlice[len(newSlice)-1], "(hex)")
-						continue
-					} else {
-						continue
-					}
-				}
-				parts := strings.Split(word, "(hex)")
-				parts[0] = ConvertBase(parts[0], "(hex)")
-				newSlice = append(newSlice, parts[0])
-				newSlice = append(newSlice, parts[1])
-				changed = true
-				continue
+	for i := 0; i < len(s); i++ {
+		switch s[i] {
+		case "(hex)":
+			if len(res) > 0 {
+				res[len(res)-1] = ConvertBase(res[len(res)-1], "hex")
 			}
+			continue
 
-			if strings.Contains(word, "(bin)") {
-				if word == "(bin)" {
-					if len(newSlice) > 0 {
-						newSlice[len(newSlice)-1] = ConvertBase(newSlice[len(newSlice)-1], "(bin)")
-						continue
-					} else {
-						continue
-					}
-				}
-				parts := strings.Split(word, "(bin)")
-				parts[0] = ConvertBase(parts[0], "(bin)")
-				newSlice = append(newSlice, parts[0])
-				newSlice = append(newSlice, parts[1])
-				changed = true
-				continue
+		case "(bin)":
+			if len(res) > 0 {
+				res[len(res)-1] = ConvertBase(res[len(res)-1], "bin")
 			}
+			continue
 
-			if strings.Contains(word, "(up)") {
-				if word == "(up)" {
-					if len(newSlice) > 0 {
-						newSlice[len(newSlice)-1] = strings.ToUpper(newSlice[len(newSlice)-1])
-						continue
-					} else {
-						continue
-					}
-				}
-				parts := strings.Split(word, "(up)")
-				parts[0] = strings.ToUpper(parts[0])
-				newSlice = append(newSlice, parts[0])
-				newSlice = append(newSlice, parts[1])
-				changed = true
-				continue
+		case "(up)":
+			if len(res) > 0 {
+				res[len(res)-1] = strings.ToUpper(res[len(res)-1])
 			}
+			continue
 
-			if strings.Contains(word, "(low)") {
-				if word == "(low)" {
-					if len(newSlice) > 0 {
-						newSlice[len(newSlice)-1] = strings.ToLower(newSlice[len(newSlice)-1])
-						continue
-					} else {
-						continue
-					}
-				}
-				parts := strings.Split(word, "(low)")
-				parts[0] = strings.ToLower(parts[0])
-				newSlice = append(newSlice, parts[0])
-				newSlice = append(newSlice, parts[1])
-				changed = true
-				continue
+		case "(low)":
+			if len(res) > 0 {
+				res[len(res)-1] = strings.ToLower(res[len(res)-1])
 			}
+			continue
 
-			if strings.Contains(word, "(cap)") {
-				if word == "(cap)" {
-					if len(newSlice) > 0 {
-						newSlice[len(newSlice)-1] = ToCap(newSlice[len(newSlice)-1])
-						continue
-					} else {
-						continue
-					}
-				}
-				parts := strings.Split(word, "(cap)")
-				parts[0] = ToCap(parts[0])
-				newSlice = append(newSlice, parts[0])
-				newSlice = append(newSlice, parts[1])
-				changed = true
-				continue
+		case "(cap)":
+			if len(res) > 0 {
+				res[len(res)-1] = ToCap(res[len(res)-1])
 			}
+			continue
 
-			// If no modification, keep the word
-			newSlice = append(newSlice, word)
+		default:
+			res = append(res, s[i])
 		}
-
-		s = newSlice
 	}
-	return s
+
+	res = Numbered(res)
+	return res
 }
 
-// Nested processes tags like (cap, 2), (low, 3), (up, 5)
-func Nested(s []string) []string {
-	se := Punctuations([]byte((strings.Join(s, " "))))
-	s = strings.Fields(string(se))
-
-	for i := 1; i < len(s)-1; i++ {
-		check := false
-		if strings.HasSuffix(s[i], "(cap,") || strings.HasPrefix(s[i], "(") && strings.HasPrefix(s[i+1], "cap") {
-			s = Do_n_times(s, i, "cap")
-			check = true
-		}
-		if strings.HasSuffix(s[i], "(low,") || strings.HasPrefix(s[i], "(") && strings.HasPrefix(s[i+1], "low") {
-			s = Do_n_times(s, i, "low")
-			check = true
-		}
-		if strings.HasSuffix(s[i], "(up,") || strings.HasPrefix(s[i], "(") && strings.HasPrefix(s[i+1], "up") {
-			s = Do_n_times(s, i, "up")
-			check = true
-		}
-		if check {
-			start := i
-			elementsToRemove := 0
-
-			for j := i; j < len(s); j++ {
-				elementsToRemove++
-				if strings.Contains(s[j], ")") {
-					if idx := strings.Index(s[j], ")"); idx < len(s[j])-1 {
-						s[j] = s[j][idx+1:]
-						elementsToRemove--
-					}
-					break
-				}
+// processes tags like (cap, 2), (low, 3), (up, 5)
+func Numbered(s []string) []string {
+	var check bool
+	for i := 0; i < len(s)-1; i++ {
+		if s[i] == "(cap," && strings.HasSuffix(s[i+1], ")") {
+			s, check = Do_n_times(s, i, "cap")
+			if !check { // if no number (cap, )
+				continue
 			}
+			s = append(s[:i], s[i+2:]...)
+			i--
 
-			s = append(s[:start], s[start+elementsToRemove:]...)
-			i = start - 1
+		} else if s[i] == "(low," && strings.HasSuffix(s[i+1], ")") {
+			s, check = Do_n_times(s, i, "low")
+			if !check {
+				continue
+			}
+			s = append(s[:i], s[i+2:]...)
+			i--
+
+		} else if s[i] == "(up," && strings.HasSuffix(s[i+1], ")") {
+			s, check = Do_n_times(s, i, "up")
+			if !check {
+				continue
+			}
+			s = append(s[:i], s[i+2:]...)
+			i--
+
 		}
 	}
 	return s
 }
 
-func Do_n_times(s []string, i int, typ string) []string {
+func Do_n_times(s []string, i int, typ string) ([]string, bool) {
 	numIndex := i + 1
 
-	// If i+1 is not numeric, try i+2
-	val, bracket := IsNumeric(s[numIndex])
-	if !val && numIndex+1 < len(s) {
-		numIndex = i + 2
-		val, bracket = IsNumeric(s[numIndex])
-	}
-
-	if !val {
-		return s
-	}
+	valid := IsNumeric(s[numIndex])
 	var x int
-	if bracket == 2 {
+
+	if !valid {
+		return s, false
+	} else {
 		str := s[numIndex][0 : len(s[numIndex])-1] // Remove last char ')'
 		x, _ = strconv.Atoi(str)
-	} else {
-		x, _ = strconv.Atoi(s[numIndex])
 	}
 
 	if x > 0 {
-		if typ == "low" {
-			for i-1 >= 0 {
+		switch typ {
+		case "low":
+			for x > 0 && i > 0 {
 				s[i-1] = strings.ToLower(s[i-1])
 				i--
+				x--
 			}
-		} else if typ == "up" {
-			for i-1 >= 0 {
+		case "up":
+			for x > 0 && i > 0 {
 				s[i-1] = strings.ToUpper(s[i-1])
 				i--
+				x--
 			}
-		} else {
-			for i-1 >= 0 {
+		case "cap":
+			for x > 0 && i > 0 {
 				s[i-1] = ToCap(s[i-1])
 				i--
+				x--
 			}
 		}
 	}
-	return s
+	return s, true
 }
 
-func IsNumeric(s string) (bool, int) {
-	if len(s) == 0 {
-		return false, 0
+func IsNumeric(s string) bool {
+	if len(s) <= 1 || s[len(s)-1] != ')' {
+		return false
 	}
-
-	for i, char := range s {
-		if i == len(s)-1 {
-			if char == ')' {
-				return true, 2
-			} else if char >= '0' && char <= '9' {
-				return true, 1
-			} else {
-				return false, 0
-			}
-		}
+	ss := s[:len(s)-1]
+	for _, char := range ss {
 		if char < '0' || char > '9' {
-			return false, 0
+			return false
 		}
 	}
-	return true, 1
+	return true
 }
