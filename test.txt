@@ -6,7 +6,7 @@ hello.exe
 .don't
 
 hi ( up , 6 )
-hi (up, 2)
+hi (up, -1)
 sss (cap, 1) (low, 2)
 salam cv CAP (cap) (low) lll ' opk   '   okok sala' m ' don't ok
 

@@ -125,7 +125,10 @@ func IsNumeric(s string) bool {
 		return false
 	}
 	ss := s[:len(s)-1]
-	for _, char := range ss {
+	for i, char := range ss {
+		if i == 0 && char == '-' {
+			continue
+		}
 		if char < '0' || char > '9' {
 			return false
 		}

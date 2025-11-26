@@ -6,7 +6,7 @@ hello. exe
 . don't
 
 hi ( up, 6 )
-HI
+hi
 sss
 salam cv cap lll 'opk' okok sala 'm' don't ok
 

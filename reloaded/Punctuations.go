@@ -1,13 +1,12 @@
 package reloaded
 
 func Punctuations(r []byte) []byte {
-
 	// Handle single quotes
 	check := false
 	for i := 0; i < len(r); i++ {
 		if r[i] == '\'' {
 			if !check {
-				//Opening '
+				// Opening '
 				if i < len(r)-1 && i > 0 && isAlpha(r[i-1]) && isAlpha(r[i+1]) {
 					continue
 				}
@@ -51,7 +50,7 @@ func Punctuations(r []byte) []byte {
 					r[i+1] == '?' || r[i+1] == ':' || r[i+1] == ';' || r[i+1] == '\''
 
 				if r[i+1] != ' ' && !nextIsPunct {
-					r = append(r[:i+1], append([]byte{' '}, r[i+1:]...)...)
+					r = []byte(string(r[:i+1]) + " " + string(r[i+1:]))
 					i++
 				}
 			}
