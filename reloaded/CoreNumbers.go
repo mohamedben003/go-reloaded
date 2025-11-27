@@ -12,33 +12,28 @@ func Core(s []string) []string {
 		switch s[i] {
 		case "(hex)":
 			if len(res) > 0 {
-				res[len(res)-1] = ConvertBase(res[len(res)-1], "hex")
+				res[len(res)-1] = ConvertBase(res[len(res)-1], s[i])
 			}
-			continue
 
 		case "(bin)":
 			if len(res) > 0 {
-				res[len(res)-1] = ConvertBase(res[len(res)-1], "bin")
+				res[len(res)-1] = ConvertBase(res[len(res)-1], s[i])
 			}
-			continue
 
 		case "(up)":
 			if len(res) > 0 {
 				res[len(res)-1] = strings.ToUpper(res[len(res)-1])
 			}
-			continue
 
 		case "(low)":
 			if len(res) > 0 {
 				res[len(res)-1] = strings.ToLower(res[len(res)-1])
 			}
-			continue
 
 		case "(cap)":
 			if len(res) > 0 {
 				res[len(res)-1] = ToCap(res[len(res)-1])
 			}
-			continue
 
 		default:
 			res = append(res, s[i])

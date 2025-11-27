@@ -11,6 +11,7 @@ import (
 func main() {
 	arg := os.Args[1:]
 	if len(arg) != 2 {
+		fmt.Println("you should put both the sample and the result file names")
 		return
 	}
 

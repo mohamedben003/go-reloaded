@@ -10,6 +10,10 @@ func an(s []string) []string {
 			s[i] = "an"
 		} else if s[i] == "A" && vowel {
 			s[i] = "An"
+		} else if s[i] == "an" && !vowel {
+			s[i] = "a"
+		} else if s[i] == "An" && !vowel {
+			s[i] = "A"
 		}
 	}
 	return s
