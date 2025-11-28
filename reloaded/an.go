@@ -6,14 +6,18 @@ func an(s []string) []string {
 		vowel := s[i+1][0] == 'a' || s[i+1][0] == 'e' || s[i+1][0] == 'i' || s[i+1][0] == 'o' || s[i+1][0] == 'u' || s[i+1][0] == 'h' ||
 			s[i+1][0] == 'A' || s[i+1][0] == 'E' || s[i+1][0] == 'I' || s[i+1][0] == 'O' || s[i+1][0] == 'U' || s[i+1][0] == 'H'
 
-		if s[i] == "a" && vowel {
-			s[i] = "an"
-		} else if s[i] == "A" && vowel {
-			s[i] = "An"
-		} else if s[i] == "an" && !vowel {
-			s[i] = "a"
-		} else if s[i] == "An" && !vowel {
-			s[i] = "A"
+		if vowel {
+			if s[i] == "a" {
+				s[i] = "an"
+			} else if s[i] == "A" {
+				s[i] = "An"
+			}
+		} else if isAlpha(s[i+1][0]) {
+			if s[i] == "an" {
+				s[i] = "a"
+			} else if s[i] == "An" {
+				s[i] = "A"
+			}
 		}
 	}
 	return s
