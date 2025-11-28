@@ -3,8 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
+	"path/filepath"
 	"reloaded/reloaded"
+	"strings"
 )
 
 func main() {
@@ -13,7 +14,11 @@ func main() {
 		fmt.Println("you should put both the sample and the result file names")
 		return
 	}
-
+	
+	if filepath.Base(arg[1]) == "main.go" {
+		fmt.Println("Not allowed to change the main from there 🙃")
+		return
+	}
 	r, err := os.ReadFile(string(arg[0]))
 	if err != nil {
 		fmt.Println(err)
